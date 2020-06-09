@@ -1,0 +1,15 @@
+{
+  "name": "iot_projet",
+  "version": "1.0.0",
+  "description": "projet d'application contre le covid19",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "ibmiotf": "^0.2.41"
+  }
+}
