@@ -4,13 +4,23 @@
   "description": "projet d'application contre le covid19",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard && node my-tests.js"
   },
   "author": "les charlatans (SEPTEMBRE Alexandre et MARGAIL Maurin)",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
-    "ibmiotf": "^0.2.41"
+    "express": "^4.17.1",
+    "finalhandler": "^1.1.2",
+    "http": "0.0.1-security",
+    "https": "^1.0.0",
+    "ibmiotf": "^0.2.41",
+    "path": "^0.12.7",
+    "serve-favicon": "^2.5.0",
+    "util": "^0.12.3"
+  },
+  "devDependencies": {
+    "standard": "^14.3.4"
   }
 }
