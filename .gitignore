@@ -1,2 +1,3 @@
 .env
+public/env.json
 node_modules/
