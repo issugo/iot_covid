@@ -4999,6 +4999,7 @@ function createDevice() {
         }
     }
     xhr.send();
+    subscribe();
 }
 
 function publierEtat() {
@@ -5009,6 +5010,24 @@ function publierEtat() {
 function subscribeTo() {
     let nomContact = document.getElementById("nomContact").value;
     appClient.subscribeToDeviceEvents(deviceType, nomContact, "sante");
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('contact'))
+        .split('=')[1];
+    cookieValue += "," + nomContact;
+    document.cookie = "contact=" + cookieValue;
+}
+
+function subscribe() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('contact'))
+        .split('=')[1];
+    let tabContact = cookieValue.split(",");
+    for(let i = 0;i<tabContact.length;i++) {
+        appClient.subscribeToDeviceEvents(deviceType, tabContact[i], "sante");
+    }
+    
 }
 
 /**

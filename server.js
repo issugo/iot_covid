@@ -9,6 +9,7 @@ const path = require('path')
 const favicon = require('serve-favicon')
 const client = require('ibmiotf')
 const util = require('util')
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 /**
  * première config
@@ -38,58 +39,62 @@ let appClientConfig = {
 /**
  * endpoints
  */
+
 app.post('/create/:deviceId', function(req, res) {
-    const data = JSON.stringify({
-        "deviceId": req.params.deviceId,
-        "authToken": makeToken(),
-        "deviceInfo": {
-            "serialNumber": "string",
-            "manufacturer": "string",
-            "model": "string",
-            "deviceClass": "string",
-            "description": "string",
-            "fwVersion": "string",
-            "hwVersion": "string",
-            "descriptiveLocation": "string"
-        },
-        "location": {
-            "longitude": 0,
-            "latitude": 0,
-            "elevation": 0,
-            "accuracy": 0,
-            "measuredDateTime": date.getFullYear() + "-" + ('0'+date.getMonth()+1).slice(-2) + "-" + ('0'+date.getDate()).slice(-2) + ":" + ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2) + "." + ('0'+date.getSeconds()).slice(-2)
-        },
-        "metadata": {}
-    })
-    
-    const options = {
-        hostname: org + '.internetofthings.ibmcloud.com',
-        port: 443,
-        path: '/api/v0002/device/types/' + deviceType + '/devices',
-        method: 'POST',
-        headers: {
-            'accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + new Buffer(apiKey + ':' + tokenApi).toString('base64')
-        }
-    }
-    
-    const requete =  https.request(options, (result) => {
-        console.log(`statusCode: ${result.statusCode}`)
-        result.on('data', (d) => {
-            let test = JSON.parse(util.format("%s", d))
-            console.log("%s", d)
-            //process.stdout.write(d)
-            res.json(test);
+    console.log(checkIfExist(req.params.deviceId));
+    if(!checkIfExist(req.params.deviceId)) {
+        const data = JSON.stringify({
+            "deviceId": req.params.deviceId,
+            "authToken": makeToken(),
+            "deviceInfo": {
+                "serialNumber": "string",
+                "manufacturer": "string",
+                "model": "string",
+                "deviceClass": "string",
+                "description": "string",
+                "fwVersion": "string",
+                "hwVersion": "string",
+                "descriptiveLocation": "string"
+            },
+            "location": {
+                "longitude": 0,
+                "latitude": 0,
+                "elevation": 0,
+                "accuracy": 0,
+                "measuredDateTime": date.getFullYear() + "-" + ('0'+date.getMonth()+1).slice(-2) + "-" + ('0'+date.getDate()).slice(-2) + ":" + ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2) + "." + ('0'+date.getSeconds()).slice(-2)
+            },
+            "metadata": {}
         })
-    })
-    
-    requete.on('error', (error) => {
-        console.error(error)
-    })
-    
-    requete.write(data)
-    requete.end()
+
+        const options = {
+            hostname: org + '.internetofthings.ibmcloud.com',
+            port: 443,
+            path: '/api/v0002/device/types/' + deviceType + '/devices',
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + new Buffer(apiKey + ':' + tokenApi).toString('base64')
+            }
+        }
+
+        const requete =  https.request(options, (result) => {
+            console.log(`statusCode: ${result.statusCode}`)
+            result.on('data', (d) => {
+                let test = JSON.parse(util.format("%s", d))
+                console.log("%s", d)
+                //process.stdout.write(d)
+                res.json(test);
+            })
+        })
+
+        requete.on('error', (error) => {
+            console.error(error)
+        })
+
+        requete.write(data)
+        requete.end()
+    }
 })
 
 app.get('/set/:deviceId', function(req, res) {
@@ -111,6 +116,22 @@ function makeToken() {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
    }
    return result;
+}
+
+function checkIfExist(device) {
+    let xhr = new XMLHttpRequest();
+    let retour = false;
+    xhr.open("GET", "https://eiw3qs.internetofthings.ibmcloud.com/api/v0002/device/types/" + deviceType + "/devices", false);
+    xhr.setRequestHeader('Authorization', 'Basic ' + new Buffer(apiKey + ':' + tokenApi).toString('base64'));
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send();
+    test = JSON.parse(xhr.responseText).results;
+    for(let i = 0; i < test.length;i++) {
+        if (test[i].deviceId == device) {
+            retour = true;
+        }
+    }
+    return retour;
 }
 
 /**

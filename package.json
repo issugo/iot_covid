@@ -19,7 +19,8 @@
     "ibmiotf": "^0.2.41",
     "path": "^0.12.7",
     "serve-favicon": "^2.5.0",
-    "util": "^0.12.3"
+    "util": "^0.12.3",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "standard": "^14.3.4"
