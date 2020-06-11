@@ -14,4 +14,4 @@ lorsque toutes les dépendances auront était chargés faites :
 node server.js
 ```
 
-vous pourrez alors accéder à l'application sur l'adresse : localhost:<port>
+vous pourrez alors accéder à l'application sur l'adresse : localhost:\<port\>
