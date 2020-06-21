@@ -79,25 +79,36 @@ function publierEtat () {
 }
 
 function subscribeTo () {
-  const nomContact = document.getElementById('nomContact').value
-  appClient.subscribeToDeviceEvents(deviceType, nomContact, 'sante')
-  const cookieValue = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('contact'))
-    .split('=')[1]
-  cookieValue += ',' + nomContact
-  document.cookie = 'contact=' + cookieValue
+    const nomContact = document.getElementById('nomContact').value
+    try {
+        appClient.subscribeToDeviceEvents(deviceType, nomContact, 'sante')
+        let cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('contact'))
+            .split('=')[1]
+        cookieValue += ',' + nomContact
+        document.cookie = 'contact=' + cookieValue
+    } catch(error) {
+        console.warn(error);
+        document.cookie = "contact=" + nomContact;
+    }
+  
 }
 
 function subscribe () {
-  const cookieValue = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('contact'))
-    .split('=')[1]
-  const tabContact = cookieValue.split(',')
-  for (let i = 0; i < tabContact.length; i++) {
-    appClient.subscribeToDeviceEvents(deviceType, tabContact[i], 'sante')
+  try {
+      const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('contact'))
+        .split('=')[1]
+      const tabContact = cookieValue.split(',')
+      for (let i = 0; i < tabContact.length; i++) {
+         appClient.subscribeToDeviceEvents(deviceType, tabContact[i], 'sante')
+      }
+  } catch(error) {
+      console.warn(error);
   }
+  
 }
 
 /**
@@ -109,16 +120,29 @@ appClient.on('connect', function () {
 })
 
 appClient.on('deviceEvent', function (deviceType, deviceId, eventType, format, payload) {
-  console.log('Device Event from : ' + deviceType + ' : ' + deviceId + ' of event ' + eventType + ' with payload : ' + payload)
-  const data = JSON.parse(payload)
-  const tRow = document.createElement('tr')
-  const nomContact = document.createElement('td')
-  const etatContact = document.createElement('td')
-  nomContact.innerHTML = data.deviceId
-  etatContact.innerHTML = data.etat
-  tRow.appendChild(nomContact)
-  tRow.appendChild(etatContact)
-  document.getElementById('contacts').appendChild(tRow)
+    console.log('Device Event from : ' + deviceType + ' : ' + deviceId + ' of event ' + eventType + ' with payload : ' + payload)
+    const data = JSON.parse(payload)
+    const tRow = document.createElement('tr')
+    const nomContact = document.createElement('td')
+    const etatContact = document.createElement('td')
+    const dateContact = document.createElement('td')
+    nomContact.innerHTML = data.deviceId
+    etatContact.innerHTML = data.etat
+    dateContact.innerHTML = date.getFullYear() + '-' + parseInt(date.getMonth()+1).toString() + '-' + date.getDate()
+    tRow.appendChild(nomContact)
+    tRow.appendChild(etatContact)
+    tRow.appendChild(dateContact)
+    document.getElementById('contacts').appendChild(tRow)
+    if(data.deviceId != window.device.id) {
+        if(data.etat == "malade") {
+            const myData = { deviceId: window.device.id, etat: "suspect" }
+            appClient.publishDeviceEvent(deviceType, window.device.id, 'sante', 'json', myData);
+        }
+    } else {
+        console.log(data.etat)
+        console.log(document.getElementById('etatSubscribed'))
+        document.getElementById('etatSubscribed').innerHTML = data.etat;
+    }
 })
 
 appClient.on('error', function (err) {

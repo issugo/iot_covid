@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEST iot_covid medecin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="images/favicon.ico" />
+        <link rel="stylesheet" type='text/css' href='style.css'>
+        <script src='env.json'></script>
+    </head>
+    <body>
+        <h1>BONJOUR</h1>
+        <h2 id="etatSubscribed"></h2>
+        <div class='form'>
+            <input type="text" id="nomContact">
+            <button id="ajouter">ajouter</button>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>client</th>
+                    <th>etat</th>
+                    <th>publication</th>
+                </tr>
+            </thead>
+            <tbody id='contacts'>
+            </tbody>
+        </table>
+        <script src="bundle.js"></script>
+    </body>
+    
+</html>

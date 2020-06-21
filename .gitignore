@@ -1,3 +1,5 @@
-.env
-public/env.json
-node_modules/
+client/.env
+client/public/env.json
+client/node_modules/
+medecin/public/env.json
+medecin/node_modules/
