@@ -12,7 +12,7 @@
     "axios": "^0.19.2",
     "buffer": "^5.6.0",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "finalhandler": "^1.1.2",
     "http": "0.0.1-security",
     "https": "^1.0.0",
